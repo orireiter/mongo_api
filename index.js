@@ -2,12 +2,12 @@ const mongodb = require("mongodb");
 const oid = require("mongodb").ObjectID;
 const mclient = mongodb.MongoClient;
 
+var methods = {};
 
-
-const create_db = (ip, db_name, collection_name) => {
+methods.create_db = (ip, db_name, collection_name) => {
     let db_url = `mongodb://${ip}:27017/`;
             
-    mclient.connect(db_url, (err, db) => {
+    mclient.connect(db_url, { useUnifiedTopology: true }, (err, db) => {
         if (err) throw err;
 
         let dbo = db.db(db_name);
@@ -25,11 +25,10 @@ const create_db = (ip, db_name, collection_name) => {
 };
 
 
-
-const insert_doc = (ip, db_name, collection_name, doc_dict) => {
+methods.insert_doc = (ip, db_name, collection_name, doc_dict) => {
     let db_url = `mongodb://${ip}:27017/`;
             
-    mclient.connect(db_url, (err, db) => {
+    mclient.connect(db_url, { useUnifiedTopology: true }, (err, db) => {
         if (err) throw err;
 
         let dbo = db.db(db_name);
@@ -47,21 +46,22 @@ const insert_doc = (ip, db_name, collection_name, doc_dict) => {
     });
 };
 
-const delete_doc = (ip, db_name, collection_name, doc_dict) => {
+
+methods.delete_doc = (ip, db_name, collection_name, doc_dict) => {
     let db_url = `mongodb://${ip}:27017/`;
             
-    mclient.connect(db_url, (err, db) => {
+    mclient.connect(db_url, { useUnifiedTopology: true }, (err, db) => {
         if (err) throw err;
 
         let dbo = db.db(db_name);
-        
-        dbo.collection(collection_name).deleteOne(doc_dict, (err, res) => {
+        let query = {_id: oid(doc_dict._id)}
+        dbo.collection(collection_name).deleteOne(query, (err, res) => {
             if (err) {
                 console.log(err.name);
                 console.log(err.codeName);
             }
             else {
-                console.log(`inserted doc to db named "${db_name}" with collection named "${collection_name}"`);    
+                console.log(`deleted doc to db named "${db_name}" with collection named "${collection_name}"`);    
             }
             db.close();
         });
@@ -69,15 +69,15 @@ const delete_doc = (ip, db_name, collection_name, doc_dict) => {
 };
 
 
-const show_collection = (ip, db_name, collection_name) => {
+methods.show_collection = (ip, db_name, collection_name, query={}) => {
     let db_url = `mongodb://${ip}:27017/`;
             
-    mclient.connect(db_url, (err, db) => {
+    mclient.connect(db_url, { useUnifiedTopology: true }, (err, db) => {
         if (err) throw err;
 
         let dbo = db.db(db_name);
         
-        dbo.collection(collection_name).find({}).toArray((err, res) => {
+        dbo.collection(collection_name).find(query).toArray((err, res) => {
             if (err) {
                 console.log(err.name);
                 console.log(err.codeName);
@@ -87,14 +87,21 @@ const show_collection = (ip, db_name, collection_name) => {
                 console.log(`queried db named "${db_name}" with collection named "${collection_name}"`);    
             }
             db.close();
+            return res;
         });
     });
 };
 
 
 
+
+
+module.exports = methods;
+
+
+
 /*
-var test = insert_doc("localhost", "node", "b",{name: "ori", age: 21});
+var test = insert_doc("localhost", "node", "users",{name: "ori", age: 21});
 
 
 var test = delete_doc("localhost", "node", "b",{_id: oid("5f54f83a194575303425b659")});
