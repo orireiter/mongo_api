@@ -1,0 +1,11 @@
+example JSONs for this api
+
+
+inserting doc  => {name: "ori", age: 21}
+/* when inserting, you can use any key\value you like */
+
+deleting doc => {_id: "5f54f83a194575303425b659"}
+/* when deleting, you can only delete by id, and in this format*/
+
+
+var test = show_collection("localhost", "node", "b");

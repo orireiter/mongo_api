@@ -4,6 +4,7 @@ const mclient = mongodb.MongoClient;
 
 var methods = {};
 
+
 methods.create_db = (ip, db_name, collection_name) => {
     let db_url = `mongodb://${ip}:27017/`;
             
@@ -84,7 +85,7 @@ methods.show_collection = (ip, db_name, collection_name, query={}) => {
             }
             else {
                 console.log(res);
-                console.log(`queried db named "${db_name}" with collection named "${collection_name}"`);    
+                console.log(`queried db named "${db_name}" with collection named "${collection_name}"`);
             }
             db.close();
             return res;
@@ -93,19 +94,4 @@ methods.show_collection = (ip, db_name, collection_name, query={}) => {
 };
 
 
-
-
-
 module.exports = methods;
-
-
-
-/*
-var test = insert_doc("localhost", "node", "users",{name: "ori", age: 21});
-
-
-var test = delete_doc("localhost", "node", "b",{_id: oid("5f54f83a194575303425b659")});
-
-var test = show_collection("localhost", "node", "b");
-
-*/

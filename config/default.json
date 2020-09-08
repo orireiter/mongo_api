@@ -11,6 +11,27 @@
                 "dbName": "node",
                 "collection": "users"
             }
+        },
+        "tasks":{
+            "dbConfig": {
+                "host": "localhost",
+                "dbName": "node",
+                "collection": "tasks"
+            }
+        },
+        "calendar":{
+            "dbConfig": {
+                "host": "localhost",
+                "dbName": "node",
+                "collection": "calendar"
+            }
+        },
+        "feed":{
+            "dbConfig": {
+                "host": "localhost",
+                "dbName": "node",
+                "collection": "feed"
+            }
         }
     }
 }
