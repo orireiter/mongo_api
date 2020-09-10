@@ -9,18 +9,8 @@ const config = require("config");
 
 
 
-/*  GET method is problematic, probably need async stuff.
 
-app.get("/register", (req, res, next) => {
-    let body = req.body;
-    let conf = config.get("mongo").users.dbConfig;
-    
-    const ori = mongo_stuff.show_collection(conf.host, conf.dbName, conf.collection, body);
-    console.log(ori);
-    res.send(ori);
 
-   });
-*/
 
 
 const dbs = config.get("mongo");
@@ -41,7 +31,19 @@ for (const [key, value] of Object.entries(dbs)) {
     let body = req.body;
     mongo_stuff.delete_doc(value.dbConfig.host, value.dbConfig.dbName, value.dbConfig.collection, body);
     res.send(`document deleted from ${key} successfully`);
-    });  
+    });
+    
+    
+    /*  GET method is used to query. by default retrieves all collection,
+     otherwise requires mongo query */
+  app.get(`/${key}`, async (req, res, next) => {
+    let body = req.body;
+    
+    const ori = await mongo_stuff.show_collection(value.dbConfig.host, value.dbConfig.dbName, value.dbConfig.collection, body)
+      .then(ori => {
+        res.send(ori);
+      });
+  });
 };
 
 

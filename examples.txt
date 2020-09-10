@@ -8,4 +8,10 @@ deleting doc => {_id: "5f54f83a194575303425b659"}
 /* when deleting, you can only delete by id, and in this format*/
 
 
+querying doc => {"ori":{"$regex": "^h"}}
+/* when querying, you can use this syntax for exapmle, to get all docs with a field "ori"
+   which has a value starting with the letter h */
+
+
+
 var test = show_collection("localhost", "node", "b");
