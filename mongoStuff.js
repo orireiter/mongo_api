@@ -26,48 +26,54 @@ methods.create_db = (ip, db_name, collection_name) => {
 };
 
 
-methods.insert_doc = (ip, db_name, collection_name, doc_dict) => {
+methods.insert_doc = async (ip, db_name, collection_name, doc_dict) => {
     let db_url = `mongodb://${ip}:27017/`;
-            
-    mclient.connect(db_url, { useUnifiedTopology: true }, (err, db) => {
-        if (err) throw err;
-
-        let dbo = db.db(db_name);
-        
-        dbo.collection(collection_name).insertOne(doc_dict, (err, res) => {
-            if (err) {
-                console.log(err.name);
-                console.log(err.codeName);
-            }
-            else {
-                console.log(`inserted doc to db named "${db_name}" with collection named "${collection_name}"`);    
-            }
-            db.close();
-        });
-    });
+    
+    try{
+        var client = await mclient.connect(db_url, { useUnifiedTopology: true });
+    }
+    catch{
+        return("mongo connection error");
+    }
+    
+    let dbo = client.db(db_name);
+    
+    try {
+        const res = await dbo.collection(collection_name).insertOne(doc_dict);
+        return res;
+    }
+    catch{
+        return("mongo insert error");
+    }
+    finally {
+        client.close();
+    };
 };
 
 
-methods.delete_doc = (ip, db_name, collection_name, doc_dict) => {
+methods.delete_doc = async (ip, db_name, collection_name, doc_dict) => {
     let db_url = `mongodb://${ip}:27017/`;
             
-    mclient.connect(db_url, { useUnifiedTopology: true }, (err, db) => {
-        if (err) throw err;
-
-        let dbo = db.db(db_name);
-        let query = {_id: oid(doc_dict._id)}
-        dbo.collection(collection_name).deleteOne(query, (err, res) => {
-            if (err) {
-                console.log(err.name);
-                console.log(err.codeName);
-                return err;
-            }
-            else {
-                console.log(`deleted doc to db named "${db_name}" with collection named "${collection_name}"`);    
-            }
-            db.close();
-        });
-    });
+    try{
+        var client = await mclient.connect(db_url, { useUnifiedTopology: true });
+    }
+    catch{
+        return("mongo connection error");
+    }
+    
+    let dbo = client.db(db_name);
+    
+    try {
+        let query = {_id: oid(doc_dict._id)};
+        const res = await dbo.collection(collection_name).deleteOne(query);
+        return res;
+    }
+    catch{
+        return("mongo delete error");
+    }
+    finally {
+        client.close();
+    };
 };
 
 
@@ -75,7 +81,7 @@ methods.show_collection = async (ip, db_name, collection_name, query={}) => {
     let db_url = `mongodb://${ip}:27017/`;
             
     try{
-        let client = await mclient.connect(db_url, { useUnifiedTopology: true });
+        var client = await mclient.connect(db_url, { useUnifiedTopology: true });
     }
     catch{
         return("mongo connection error");
