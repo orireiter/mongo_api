@@ -39,10 +39,10 @@ for (const [key, value] of Object.entries(dbs)) {
   });
 
 
-    /*DELETE works by sending a json as such => { _id: '5f577c11c00a5b03ec47f501' }
-    only works using id, not by other fields*/
-  app.delete(`/${key}`, async (req, res) => {
-    let body = req.body;
+    /*DELETE works by sending going to url with the doc ID
+      example http://localhos:3000/users/123456789123*/
+  app.delete(`/${key}/:docID`, async (req, res) => {
+    let body = {_id: req.params.docID}
     const answer = await mongo_stuff.delete_doc(value.dbConfig.host, value.dbConfig.dbName, value.dbConfig.collection, body)
       .then(answer => {
         try {
@@ -52,6 +52,34 @@ for (const [key, value] of Object.entries(dbs)) {
           }
           else {
             res.send(`document deleted from ${key} UNsuccessfully`);
+          }
+        }
+        catch{
+          console.log(answer);
+          res.send(answer)
+        };
+      })
+      .catch(err => {
+        console.log(err);
+        res.send(err);
+      })
+  });
+
+
+    /*PUT works by sending a json to url containing doc ID 
+      example http://localhos:3000/users/123456789123*/
+  app.put(`/${key}/:docID`, async (req, res) => {
+    let docID= {_id: req.params.docID};
+    let body = req.body;
+    const answer = await mongo_stuff.update_doc(value.dbConfig.host, value.dbConfig.dbName, value.dbConfig.collection, docID, body)
+      .then(answer => {
+        try {
+          
+          if (answer.result.n == 1){
+            res.send(`document updated from ${key} successfully`);
+          }
+          else {
+            res.send(`document update from ${key} UNsuccessfully`);
           }
         }
         catch{

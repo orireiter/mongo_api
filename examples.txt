@@ -4,8 +4,13 @@ example JSONs for this api
 inserting doc  => {name: "ori", age: 21}
 /* when inserting, you can use any key\value you like */
 
-deleting doc => {_id: "5f54f83a194575303425b659"}
-/* when deleting, you can only delete by id, and in this format*/
+
+/* when deleting, you can only delete by id, and by adding the id to the url
+   for example http://localhost:3000/123456789123 */
+
+/* when inserting, you can do so by id, and by adding the id to the url
+   for example http://localhost:3000/123456789123
+   while seding with it the json of the changes you will be making */
 
 
 querying doc => {"ori":{"$regex": "^h"}}
